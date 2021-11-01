@@ -23,6 +23,11 @@ status=$?
 get_error="eval $command"
 
 if ((status == 0)); then
+    if [ $size -gt 1000 ]; then
+        size_in_mb=$(expr $size / 1000)
+        echo -e "The size of repository '$BLUE$1$RESET' is $size_in_mb MB."
+        exit 0
+    fi
     echo -e "The size of repository '$BLUE$1$RESET' is $size KB."
     exit 0
 else
