@@ -18,7 +18,7 @@ RED="\033[0;31m"
 RESET="\033[0m"
 
 command="curl -s https://api.github.com/repos/$1"
-size=$($command | grep "size" | grep -o "[[:digit:]]*")
+size=$($command | grep "size" | grep -o "[[:digit:]]*" | head -n 1)
 status=$?
 get_error="eval $command"
 
