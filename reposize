@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    echo "Username and repository name are required. See --help for more info."
+    exit 1
+fi
+
+case "$1" in
+    --help|-h) echo "Usage: reposize <username/repository>"; exit 0
+    ;;
+    --version|-v) echo "Version 0.0.1"; exit 0
+    ;;
+esac
+
+BLUE="\033[0;34m"
+RED="\033[0;31m"
+RESET="\033[0m"
+
+command="curl -s https://api.github.com/repos/$1"
+size=$($command | grep "size" | grep -o "[[:digit:]]*")
+status=$?
+get_error="eval $command"
+
+if ((status == 0)); then
+    echo -e "The size of repository '$BLUE$1$RESET' is $size KB."
+    exit 0
+else
+    echo -e "${RED}Error occurs.${RESET}"
+    if $get_error | grep -q "Not Found"; then
+        echo -e "${RED}$1 has invalid username or repository name.${RESET}"
+        exit 1
+    fi
+    echo "Response from Github: $($get_error)"
+    exit 1
+fi
